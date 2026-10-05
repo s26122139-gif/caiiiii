@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web Dev Journey ✦ 作品集闖關入口</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: {
+                            50: '#FFFCF8',
+                            100: '#FFF8F0',
+                            200: '#FDF1E1',
+                            300: '#FBE4C8',
+                        },
+                        korean: {
+                            pink: '#FFB7C5',
+                            softPink: '#FFE5EC',
+                            peach: '#FFDAC1',
+                            sage: '#E2F0CB',
+                            lavender: '#E8DFF5',
+                            text: '#4A403A',
+                            subtext: '#8C7A6B',
+                            cardBg: '#FFFFFF',
+                            locked: '#EAE5E1',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'Noto Sans TC', 'sans-serif'],
+                        rounded: ['Fredoka', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft-korean': '0 10px 30px -5px rgba(230, 180, 170, 0.25), 0 4px 10px -2px rgba(200, 160, 150, 0.15)',
+                        'hover-korean': '0 20px 35px -5px rgba(255, 183, 197, 0.4), 0 10px 15px -3px rgba(255, 218, 193, 0.3)',
+                        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.04)',
+                        'locked-shadow': '0 4px 12px rgba(0, 0, 0, 0.03)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 韓系柔光背景與圖案 */
+        body {
+            background-color: #FFF9F5;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 218, 193, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 183, 197, 0.3) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(232, 223, 245, 0.3) 0%, transparent 60%);
+            background-attachment: fixed;
+            color: #4A403A;
+            font-family: 'Poppins', 'Noto Sans TC', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 背景微細風格網格 */
+        .bg-grid-pattern {
+            background-size: 24px 24px;
+            background-image: linear-gradient(to right, rgba(140, 122, 107, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(140, 122, 107, 0.05) 1px, transparent 1px);
+        }
+
+        /* 解鎖卡片的波光亮澤掃過特效 */
+        .unlocked-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .unlocked-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0.6) 50%,
+                rgba(255, 255, 255, 0) 60%,
+                transparent 100%
+            );
+            transform: rotate(30deg) translateY(-100%);
+            transition: transform 0.8s ease;
+            pointer-events: none;
+        }
+
+        .unlocked-card:hover::before {
+            transform: rotate(30deg) translateY(100%);
+        }
+
+        .unlocked-card:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+
+        /* 鎖定卡片 hover 微動效果 */
+        .locked-card {
+            transition: all 0.3s ease;
+        }
+
+        .locked-card:hover {
+            transform: translateY(-3px);
+            background-color: #F7F3F0;
+        }
+
+        /* 鎖定提示 Popover */
+        .locked-card:active .lock-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        /* 飄浮心形/星號輕微動畫 */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .floating-decoration {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+
+        /* 呼吸彩彩光 */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; filter: blur(20px); }
+            50% { opacity: 0.9; filter: blur(25px); }
+        }
+
+        .glow-bg {
+            animation: pulseGlow 6s infinite alternate;
+        }
+
+        /* 自訂 Toast 訊息動態 */
+        #toast {
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+    </style>
+</head>
+<body class="bg-grid-pattern relative flex flex-col min-h-screen justify-between py-10 px-4 sm:px-6 lg:px-8">
+
+    <div class="fixed top-12 left-10 w-48 h-48 bg-korean-softPink rounded-full glow-bg pointer-events-none -z-10"></div>
+    <div class="fixed bottom-12 right-10 w-60 h-60 bg-korean-peach opacity-50 rounded-full glow-bg pointer-events-none -z-10"></div>
+    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-korean-lavender opacity-30 rounded-full glow-bg pointer-events-none -z-10"></div>
+
+    <header class="max-w-xl mx-auto text-center relative mb-10 w-full">
+        <!-- 大頭貼區域 -->
+        <div class="relative inline-block mb-4 group cursor-pointer">
+            <!-- 裝飾花環光暈 -->
+            <div class="absolute -inset-1.5 bg-gradient-to-r from-korean-pink via-korean-peach to-korean-lavender rounded-full blur opacity-75 group-hover:opacity-100 transition duration-500 group-hover:scale-105"></div>
+            
+            <div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-soft-korean bg-white flex items-center justify-center transition duration-300 group-hover:scale-105">
+                <!-- 風格大頭貼照片 (Unsplash 質感似韓國簡約插畫/風格寫真) -->
+                <img 
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80" 
+                    alt="User Avatar" 
+                    class="w-full h-full object-cover"
+                    onerror="this.src='https://placehold.co/150x150/FFE5EC/4A403A?text=✨+Me'"
+                >
+            </div>
+
+            <!-- 可愛狀態徽章 -->
+            <span class="absolute bottom-1 right-1 bg-white text-xs font-medium px-2.5 py-1 rounded-full shadow-md border border-korean-softPink flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-xs text-korean-subtext font-rounded">Online</span>
+            </span>
+            
+            <!-- 可愛漂浮小飾品 -->
+            <span class="absolute -top-2 -right-2 text-xl floating-decoration">🌸</span>
+        </div>
+
+        <!-- 姓名與簡介 -->
+        <h1 class="text-2xl sm:text-3xl font-bold font-rounded tracking-wide text-korean-text mb-1 flex items-center justify-center gap-2">
+            <span>Alex's Dev Studio</span>
+            <span class="text-korean-pink text-xl">✦</span>
+        </h1>
+        
+        <p class="text-sm sm:text-base text-korean-subtext font-normal mb-5">
+            網頁程式設計學習之旅 ‧ 闖關解鎖作品集 ☕️✨
+        </p>
+
+        <!-- 闖關成就進度條卡片 -->
+        <div class="bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-soft-korean border border-white/60 max-w-sm mx-auto">
+            <div class="flex justify-between items-center text-xs font-medium mb-2">
+                <span class="flex items-center gap-1.5 text-korean-text">
+                    <span class="text-base">🏆</span> 解鎖進度
+                </span>
+                <span class="font-bold text-korean-pink bg-korean-softPink px-2.5 py-0.5 rounded-full">
+                    2 / 16 完成 (12.5%)
+                </span>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="w-full h-3 bg-korean-softPink/50 rounded-full overflow-hidden p-0.5 border border-korean-pink/20 shadow-inner-soft">
+                <div class="h-full bg-gradient-to-r from-korean-pink to-korean-peach rounded-full transition-all duration-1000 ease-out shadow-sm" style="width: 12.5%;"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto w-full mb-12">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+
+            <!-- Card 1 (Unlocked) -->
+            <a href="w1/index.html" class="unlocked-card bg-white p-5 rounded-2xl shadow-soft-korean border border-white/80 flex flex-col justify-between h-40 group hover:shadow-hover-korean">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold font-rounded text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-full flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 已解鎖
+                    </span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform duration-300">💳</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-korean-pink tracking-wider uppercase block mb-1">Week 01</span>
+                    <h3 class="font-bold text-base text-korean-text group-hover:text-pink-500 transition-colors line-clamp-1">數位名片</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-korean-subtext pt-2 border-t border-korean-softPink/40">
+                    <span>前往檢視</span>
+                    <span class="group-hover:translate-x-1 transition-transform">➔</span>
+                </div>
+            </a>
+
+            <!-- Card 2 (Unlocked) -->
+            <a href="w2/index.html" class="unlocked-card bg-white p-5 rounded-2xl shadow-soft-korean border border-white/80 flex flex-col justify-between h-40 group hover:shadow-hover-korean">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold font-rounded text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-full flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 已解鎖
+                    </span>
+                    <span class="text-2xl group-hover:scale-125 transition-transform duration-300">🍱</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-korean-pink tracking-wider uppercase block mb-1">Week 02</span>
+                    <h3 class="font-bold text-base text-korean-text group-hover:text-pink-500 transition-colors line-clamp-1">今天吃甚麼?</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-korean-subtext pt-2 border-t border-korean-softPink/40">
+                    <span>前往檢視</span>
+                    <span class="group-hover:translate-x-1 transition-transform">➔</span>
+                </div>
+            </a>
+
+            <!-- Card 3 (Locked) -->
+            <div onclick="showLockedToast('Week 3 關卡尚未解鎖喔！請繼續加油！🔒')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full flex items-center gap-1">
+                        🔒 未解鎖
+                    </span>
+                    <span class="lock-shake text-xl opacity-60">🗝️</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 tracking-wider uppercase block mb-1">Week 03</span>
+                    <h3 class="font-bold text-base text-gray-500">未來的探索題目</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>鎖定中</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 4 (Locked) -->
+            <div onclick="showLockedToast('Week 4 關卡尚未解鎖喔！請繼續加油！🔒')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full flex items-center gap-1">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 tracking-wider uppercase block mb-1">Week 04</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 04</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 5 (Locked) -->
+            <div onclick="showLockedToast('Week 5 關卡尚未解鎖喔！')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 05</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 05</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 6 (Locked) -->
+            <div onclick="showLockedToast('Week 6 關卡尚未解鎖喔！')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 06</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 06</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 7 (Locked) -->
+            <div onclick="showLockedToast('Week 7 關卡尚未解鎖喔！')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 07</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 07</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 8 (Locked) -->
+            <div onclick="showLockedToast('Week 8 期中專題測試')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">⭐</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 08</span>
+                    <h3 class="font-bold text-base text-gray-500">期中成果展示</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 9 (Locked) -->
+            <div onclick="showLockedToast('Week 9 關卡尚未解鎖喔！')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 09</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 09</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 10 (Locked) -->
+            <div onclick="showLockedToast('Week 10 關卡尚未解鎖喔！')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 10</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 10</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 11 (Locked) -->
+            <div onclick="showLockedToast('Week 11 關卡尚未解鎖喔！')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 11</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 11</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 12 (Locked) -->
+            <div onclick="showLockedToast('Week 12 關卡尚未解鎖喔！')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 12</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 12</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 13 (Locked) -->
+            <div onclick="showLockedToast('Week 13 關卡尚未解鎖喔！')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 13</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 13</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 14 (Locked) -->
+            <div onclick="showLockedToast('Week 14 關卡尚未解鎖喔！')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 14</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 14</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 15 (Locked) -->
+            <div onclick="showLockedToast('Week 15 關卡尚未解鎖喔！')" class="locked-card cursor-pointer bg-korean-locked/40 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-gray-200/60 flex flex-col justify-between h-40 opacity-75 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-medium text-gray-500 bg-gray-200/80 px-2.5 py-1 rounded-full">🔒 未解鎖</span>
+                    <span class="lock-shake text-xl opacity-60">🔒</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 block mb-1">Week 15</span>
+                    <h3 class="font-bold text-base text-gray-500">神秘挑戰 15</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-200/50">
+                    <span>敬請期待</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+            <!-- Card 16 (Final Boss / Locked) -->
+            <div onclick="showLockedToast('Week 16 終極關卡：期末專題大成！')" class="locked-card cursor-pointer bg-gradient-to-br from-korean-locked/50 to-korean-softPink/30 backdrop-blur-xs p-5 rounded-2xl shadow-locked-shadow border border-pink-200/50 flex flex-col justify-between h-40 opacity-80 hover:opacity-100">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold font-rounded text-pink-600 bg-pink-100/80 px-2.5 py-1 rounded-full">👑 最終關卡</span>
+                    <span class="lock-shake text-xl">🏆</span>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-pink-400 block mb-1">Week 16</span>
+                    <h3 class="font-bold text-base text-gray-600">期末成果發表</h3>
+                </div>
+                <div class="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-pink-200/40">
+                    <span>最終大魔王</span>
+                    <span>🔒</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-20 opacity-0 bg-korean-text text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 text-sm z-50 pointer-events-none transition-all duration-300">
+        <span id="toast-icon">🔐</span>
+        <span id="toast-message">關卡未解鎖！</span>
+    </div>
+
+    <footer class="text-center text-xs text-korean-subtext mt-8 pb-4">
+        <p class="font-rounded flex items-center justify-center gap-1">
+            Made with <span class="text-korean-pink">♥</span> by Student Portfolio | Web Development Class
+        </p>
+    </footer>
+
+    <script>
+        let toastTimeout;
+
+        function showLockedToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+
+            toastMsg.textContent = msg;
+
+            // 清除之前的計時器
+            clearTimeout(toastTimeout);
+
+            // 顯示 Toast 彈窗
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            // 2.5 秒後自動隱藏
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>
