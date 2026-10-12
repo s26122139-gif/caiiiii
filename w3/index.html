@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>韓系奶油風 迷因產生器 Meme Generator</title>
+
+    <!-- 1. Google Fonts: 引入可愛且經典的韓系繁體中文與英文字體 (Gowun Batang, Noto Sans TC, Outfit) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+TC:wght@500;700;900&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+
+    <!-- 2. Tailwind CSS (用於快速與流暢的頁面排版) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 3. FontAwesome 圖示庫 (提供可愛 UI 圖示) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 4. html2canvas CDN (將網頁 HTML 區塊轉為圖片下載的核心套件) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --bg-cream: #FFFDF9;         /* 主背景奶油白 */
+            --card-cream: #FAF6F0;       /* 卡片背景米色 */
+            --border-cream: #EFE8DC;     /* 邊框溫和調 */
+            --accent-yellow: #F7E7CE;   /* 溫暖黃點綴 */
+            --accent-peach: #F4D3C5;    /* 柔和粉蜜桃色 */
+            --text-main: #4A403A;       /* 主文字黑棕色，比純黑更有質感 */
+            --text-muted: #8C7E75;      /* 次要提示文字色 */
+            --btn-hover: #EEDCC6;       /* 按鈕 Hover 效果色 */
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            color: var(--text-main);
+            font-family: 'Noto Sans TC', 'Outfit', sans-serif;
+            background-image: radial-gradient(#F3ECE2 1px, transparent 1px);
+            background-size: 20px 20px; /* 可愛柔和的背景點點圖案 */
+        }
+
+        /* 自訂圓潤可愛的 Input 與 Slider 風格 */
+        input[type="text"] {
+            background-color: #FFFFFF;
+            border: 2px solid var(--border-cream);
+            transition: all 0.2s ease-in-out;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #D6C3B1;
+            box-shadow: 0 0 0 3px rgba(214, 195, 177, 0.25);
+        }
+
+        /* 奶油風滑桿 (Range Slider) 客製化 */
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 999px;
+            background: #E8DFC8;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #8C7E75;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+            background: #6E6159;
+        }
+
+        /* 迷因圖片上的文字描邊效果：使用多層黑陰影模擬粗邊框，確保任何照片上都清晰 */
+        .meme-text {
+            font-family: 'Impact', 'Noto Sans TC', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow:
+                3px 3px 0 #000, -3px -3px 0 #000,
+                3px -3px 0 #000, -3px 3px 0 #000,
+                0px 3px 0 #000,  0px -3px 0 #000,
+                3px 0px 0 #000, -3px 0px 0 #000,
+                2px 2px 5px rgba(0,0,0,0.7);
+            line-height: 1.1;
+            word-break: break-word;
+            letter-spacing: 1px;
+        }
+
+        /* 可愛按鈕動態與陰影 */
+        .cream-card {
+            background-color: var(--card-cream);
+            border: 2px solid var(--border-cream);
+            box-shadow: 0 10px 25px -5px rgba(180, 160, 140, 0.15);
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-yellow);
+            color: var(--text-main);
+            border: 2px solid #E4D3B8;
+            box-shadow: 0 4px 12px rgba(210, 180, 140, 0.3);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-primary:hover {
+            background-color: var(--btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(210, 180, 140, 0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="min-h-screen py-6 px-4 md:px-8">
+
+    <header class="max-w-6xl mx-auto text-center mb-8">
+        <div class="inline-block bg-[#FAF3E0] text-[#7A6855] text-xs font-bold px-4 py-1.5 rounded-full mb-3 border border-[#E6D8C3] tracking-widest uppercase">
+            ✨ Korean Aesthetic Meme Studio
+        </div>
+        <h1 class="text-3xl md:text-5xl font-black text-[#4A403A] tracking-tight mb-2">
+            奶油風迷因產生器
+        </h1>
+        <p class="text-sm md:text-base text-[var(--text-muted)] font-medium">
+            輕鬆打造屬於你的可愛搞笑梗圖，上傳圖片、輸入文字，一鍵快速下載！
+        </p>
+    </header>
+
+    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- 左側：控制面板區 (Panel Control) -->
+        <section class="lg:col-span-5 cream-card p-6 md:p-8 rounded-3xl space-y-6">
+            
+            <div class="flex items-center space-x-2 border-b border-[#EAE2D5] pb-4">
+                <i class="fa-solid font-bold fa-sliders text-xl text-[#9E8B7D]"></i>
+                <h2 class="text-xl font-extrabold text-[#4A403A]">製作控制台</h2>
+            </div>
+
+            <!-- 1. 上傳圖片功能區 -->
+            <div class="space-y-2">
+                <label class="block text-sm font-bold text-[#5C5046]">
+                    <i class="fa-solid fa-image mr-1"></i> 選擇底圖 (本機上傳)
+                </label>
+                <!-- 隱藏原生 input，改用漂亮的自訂上傳按鈕 -->
+                <input type="file" id="imageInput" accept="image/*" class="hidden">
+                <button type="button" onclick="document.getElementById('imageInput').click()" 
+                        class="w-full py-3.5 px-4 bg-white border-2 border-dashed border-[#D6C5B3] rounded-2xl text-[#7A6C60] hover:bg-[#FAF6F0] hover:border-[#B8A796] transition-all flex items-center justify-center space-x-2 font-bold cursor-pointer">
+                    <i class="fa-solid fa-cloud-arrow-up text-lg text-[#B09E8F]"></i>
+                    <span id="uploadBtnText">點擊或拖曳上傳照片</span>
+                </button>
+            </div>
+
+            <!-- 2. 雙層文字輸入框區 -->
+            <div class="space-y-4 pt-2">
+                <div>
+                    <label for="topTextInput" class="block text-sm font-bold text-[#5C5046] mb-1.5">
+                        <i class="fa-solid fa-arrow-up-a-z mr-1"></i> 上方文字 (Top Text)
+                    </label>
+                    <input type="text" id="topTextInput" value="當你寫的程式碼" placeholder="輸入上方文字..." 
+                           class="w-full px-4 py-3 rounded-2xl text-base font-medium">
+                </div>
+
+                <div>
+                    <label for="bottomTextInput" class="block text-sm font-bold text-[#5C5046] mb-1.5">
+                        <i class="fa-solid fa-arrow-down-z-a mr-1"></i> 下方文字 (Bottom Text)
+                    </label>
+                    <input type="text" id="bottomTextInput" value="第一次就完美執行的時候" placeholder="輸入下方文字..." 
+                           class="w-full px-4 py-3 rounded-2xl text-base font-medium">
+                </div>
+            </div>
+
+            <!-- 3. 滑桿參數控制區 -->
+            <div class="space-y-5 pt-2 border-t border-[#EAE2D5]">
+                
+                <!-- 文字大小滑桿 -->
+                <div>
+                    <div class="flex justify-between text-sm font-bold text-[#5C5046] mb-1">
+                        <span><i class="fa-solid fa-text-height mr-1"></i> 字體大小</span>
+                        <span id="fontSizeVal" class="text-[#8C7E75]">36px</span>
+                    </div>
+                    <input type="range" id="fontSizeSlider" min="16" max="72" value="36" class="w-full">
+                </div>
+
+                <!-- 上方文字垂直位置滑桿 -->
+                <div>
+                    <div class="flex justify-between text-sm font-bold text-[#5C5046] mb-1">
+                        <span><i class="fa-solid fa-arrows-up-down mr-1"></i> 上方文字垂直位置</span>
+                        <span id="topPosVal" class="text-[#8C7E75]">20px</span>
+                    </div>
+                    <input type="range" id="topPosSlider" min="0" max="200" value="20" class="w-full">
+                </div>
+
+                <!-- 下方文字垂直位置滑桿 -->
+                <div>
+                    <div class="flex justify-between text-sm font-bold text-[#5C5046] mb-1">
+                        <span><i class="fa-solid fa-arrows-up-down mr-1"></i> 下方文字垂直位置</span>
+                        <span id="bottomPosVal" class="text-[#8C7E75]">20px</span>
+                    </div>
+                    <input type="range" id="bottomPosSlider" min="0" max="200" value="20" class="w-full">
+                </div>
+
+                <!-- 文字顏色選擇 -->
+                <div class="flex items-center justify-between pt-1">
+                    <label for="textColorPicker" class="text-sm font-bold text-[#5C5046]">
+                        <i class="fa-solid fa-palette mr-1"></i> 文字顏色
+                    </label>
+                    <div class="flex items-center space-x-2">
+                        <input type="color" id="textColorPicker" value="#FFFFFF" class="w-9 h-9 rounded-xl border border-gray-300 cursor-pointer p-0.5 bg-white">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 4. 超酷一鍵下載按鈕 -->
+            <div class="pt-4">
+                <button type="button" id="downloadBtn" 
+                        class="btn-primary w-full py-4 rounded-2xl font-black text-lg flex items-center justify-center space-x-2 cursor-pointer">
+                    <i class="fa-solid fa-download text-xl"></i>
+                    <span>一鍵下載迷因圖 (my-meme.png)</span>
+                </button>
+            </div>
+
+        </section>
+
+        <!-- 右側：迷因即時預覽區 (Preview Area) -->
+        <section class="lg:col-span-7 flex flex-col items-center">
+            
+            <div class="w-full cream-card p-4 md:p-6 rounded-3xl flex flex-col items-center">
+                
+                <div class="w-full flex items-center justify-between mb-4 px-2">
+                    <span class="text-sm font-extrabold text-[#7A6855] uppercase tracking-wider flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
+                        即時預覽 Live Preview
+                    </span>
+                    <span class="text-xs font-semibold text-[#A09083]">如遇跑版可微調滑桿</span>
+                </div>
+
+                <!-- 迷因擷取區域：html2canvas 會將這個包含 <img> 與文字 overlay 的 div 轉成圖片 -->
+                <div id="memeContainer" class="relative overflow-hidden rounded-2xl bg-black/5 shadow-md flex items-center justify-center max-w-full" style="min-height: 280px;">
+                    
+                    <!-- 底圖 -->
+                    <img id="memeImage" 
+                         src="https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&auto=format&fit=crop&q=80" 
+                         alt="Meme Background" 
+                         class="w-full h-auto max-h-[600px] object-contain block rounded-2xl select-none"
+                         crossorigin="anonymous">
+
+                    <!-- 上方文字圖層 -->
+                    <div id="topTextOverlay" 
+                         class="meme-text absolute left-0 right-0 text-center px-4 pointer-events-none text-white uppercase"
+                         style="top: 20px; font-size: 36px;">
+                        當你寫的程式碼
+                    </div>
+
+                    <!-- 下方文字圖層 -->
+                    <div id="bottomTextOverlay" 
+                         class="meme-text absolute left-0 right-0 text-center px-4 pointer-events-none text-white uppercase"
+                         style="bottom: 20px; font-size: 36px;">
+                        第一次就完美執行的時候
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- 頁尾宣告 -->
+    <footer class="max-w-6xl mx-auto text-center mt-12 text-xs text-[#A09287]">
+        Designed with Korean Cream Style Aesthetic • Single Page Meme Generator
+    </footer>
+
+    <script>
+        // 等待 HTML 載入完成後執行腳本
+        document.addEventListener('DOMContentLoaded', () => {
+
+            /* =========================================
+             * 1. 取得頁面中的 DOM 元素 (HTML 控制物件)
+             * ========================================= */
+            const imageInput = document.getElementById('imageInput');
+            const uploadBtnText = document.getElementById('uploadBtnText');
+            const memeImage = document.getElementById('memeImage');
+            
+            const topTextInput = document.getElementById('topTextInput');
+            const bottomTextInput = document.getElementById('bottomTextInput');
+            const topTextOverlay = document.getElementById('topTextOverlay');
+            const bottomTextOverlay = document.getElementById('bottomTextOverlay');
+
+            const fontSizeSlider = document.getElementById('fontSizeSlider');
+            const fontSizeVal = document.getElementById('fontSizeVal');
+            
+            const topPosSlider = document.getElementById('topPosSlider');
+            const topPosVal = document.getElementById('topPosVal');
+            
+            const bottomPosSlider = document.getElementById('bottomPosSlider');
+            const bottomPosVal = document.getElementById('bottomPosVal');
+
+            const textColorPicker = document.getElementById('textColorPicker');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const memeContainer = document.getElementById('memeContainer');
+
+            /* =========================================
+             * 2. 本機圖片上傳處理 (使用 FileReader 避開 CORS)
+             * ========================================= */
+            imageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0]; // 取得使用者選擇的第一個檔案
+                
+                if (file) {
+                    // 使用 HTML5 提供的 FileReader API 讀取本機檔案
+                    const reader = new FileReader();
+
+                    // 當檔案讀取完畢時觸發
+                    reader.onload = function(event) {
+                        // event.target.result 為圖片轉成的 Base64 DataURL
+                        memeImage.src = event.target.result;
+                        uploadBtnText.textContent = `已載入: ${file.name.length > 12 ? file.name.substring(0,10) + '...' : file.name}`;
+                    };
+
+                    // 開始讀取圖片檔案，轉為 Base64 格式
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            /* =========================================
+             * 3. 文字內容即時綁定 (Input Event Listeners)
+             * ========================================= */
+            // 即時更新上方文字
+            topTextInput.addEventListener('input', () => {
+                topTextOverlay.textContent = topTextInput.value;
+            });
+
+            // 即時更新下方文字
+            bottomTextInput.addEventListener('input', () => {
+                bottomTextOverlay.textContent = bottomTextInput.value;
+            });
+
+            /* =========================================
+             * 4. 滑桿與顏色控制 (Sliders & Options)
+             * ========================================= */
+            // 調整字體大小 (同時套用給上方與下方文字)
+            fontSizeSlider.addEventListener('input', () => {
+                const size = fontSizeSlider.value;
+                fontSizeVal.textContent = `${size}px`;
+                topTextOverlay.style.fontSize = `${size}px`;
+                bottomTextOverlay.style.fontSize = `${size}px`;
+            });
+
+            // 調整上方文字垂直位置 (Top Offset)
+            topPosSlider.addEventListener('input', () => {
+                const pos = topPosSlider.value;
+                topPosVal.textContent = `${pos}px`;
+                topTextOverlay.style.top = `${pos}px`;
+            });
+
+            // 調整下方文字垂直位置 (Bottom Offset)
+            bottomPosSlider.addEventListener('input', () => {
+                const pos = bottomPosSlider.value;
+                bottomPosVal.textContent = `${pos}px`;
+                bottomTextOverlay.style.bottom = `${pos}px`;
+            });
+
+            // 調整文字顏色 (Color Picker)
+            textColorPicker.addEventListener('input', () => {
+                const color = textColorPicker.value;
+                topTextOverlay.style.color = color;
+                bottomTextOverlay.style.color = color;
+            });
+
+            /* =========================================
+             * 5. 一鍵下載迷因圖功能 (html2canvas)
+             * ========================================= */
+            downloadBtn.addEventListener('click', async () => {
+                // 改變按鈕狀態呈現載入中效果
+                const originalBtnContent = downloadBtn.innerHTML;
+                downloadBtn.disabled = true;
+                downloadBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xl"></i><span>正在生成圖片中...</span>`;
+
+                try {
+                    // 使用 html2canvas 套件截取 #memeContainer 區塊
+                    const canvas = await html2canvas(memeContainer, {
+                        scale: 2,           // 提高解析度 (2倍高清畫質)
+                        useCORS: true,      // 允許跨域圖片繪製 (避免外鏈預設圖繪製失敗)
+                        backgroundColor: null // 保持背景透明度設定
+                    });
+
+                    // 將 Canvas 轉換為圖片的 Data URL (PNG 格式)
+                    const imageUrl = canvas.toDataURL('image/png');
+
+                    // 創建一個隱藏的 <a> 標籤觸發瀏覽器下載
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = imageUrl;
+                    downloadLink.download = 'my-meme.png'; // 下載的檔案名稱
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+
+                } catch (error) {
+                    console.error('下載圖片時發生錯誤：', error);
+                    alert('產生圖片失敗，請確認圖片是否順利載入！');
+                } finally {
+                    // 恢復按鈕原本樣貌
+                    downloadBtn.disabled = false;
+                    downloadBtn.innerHTML = originalBtnContent;
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
