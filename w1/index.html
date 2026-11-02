@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jamin Schith - 個人數位名片</title>
+    <!-- 引入 Google Fonts 提升文字質感 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 社群圖示庫 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS 樣式整合區域 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* 馬卡龍極簡漸層背景 */
+            background: linear-gradient(135deg, #FFF5F5 0%, #E6E6FA 50%, #E0F2FE 100%);
+            padding: 24px;
+            color: #334155;
+        }
+
+        /* 主名片容器 */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            width: 100%;
+            max-width: 360px;
+            padding: 40px 32px;
+            border-radius: 32px;
+            text-align: center;
+            /* 柔和微陰影與邊框 */
+            box-shadow: 0 20px 40px -15px rgba(148, 163, 184, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(148, 163, 184, 0.35);
+        }
+
+        /* 大頭貼邊框與容器 */
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px auto;
+        }
+
+        /* 馬卡龍色大頭貼光暈背景 */
+        .avatar-container::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(45deg, #FECDD3, #DDD6FE, #BAE6FD);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .avatar {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #FFFFFF;
+            z-index: 1;
+            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 姓名標題 */
+        .name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1E293B;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        /* 簡短自我介紹 / 職稱 */
+        .bio {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #64748B;
+            margin-bottom: 32px;
+            letter-spacing: 0.02em;
+        }
+
+        /* 按鈕列表區域 */
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 基礎按鈕樣式 */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 18px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn i {
+            font-size: 1.15rem;
+        }
+
+        /* 馬卡龍淡粉色 - Instagram 按鈕 */
+        .btn-instagram {
+            background-color: #FFE4E6;
+            color: #E11D48;
+            box-shadow: 0 4px 12px rgba(253, 164, 175, 0.3);
+        }
+
+        .btn-instagram:hover {
+            background-color: #FECDD3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(253, 164, 175, 0.45);
+        }
+
+        /* 馬卡龍粉藍色 - Email 按鈕 */
+        .btn-email {
+            background-color: #E0F2FE;
+            color: #0284C7;
+            box-shadow: 0 4px 12px rgba(186, 230, 253, 0.35);
+        }
+
+        .btn-email:hover {
+            background-color: #BAE6FD;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(186, 230, 253, 0.5);
+        }
+
+        /* 點擊時的下壓反饋 */
+        .btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 名片主體內容 -->
+    <div class="card">
+        <!-- 1. 圓形大頭貼照片 -->
+        <div class="avatar-container">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80" alt="Jamin Schith" class="avatar">
+        </div>
+
+        <!-- 2. 姓名與簡短自我介紹 -->
+        <h1 class="name">Jamin Schith</h1>
+        <p class="bio">UI/UX Designer</p>
+
+        <!-- 3. 按鈕連結區 -->
+        <div class="links">
+            <!-- Instagram 按鈕 -->
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn btn-instagram">
+                <i class="fa-brands fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+
+            <!-- Email 按鈕 -->
+            <a href="mailto:info@example.com" class="btn btn-email">
+                <i class="fa-regular fa-envelope"></i>
+                <span>Email 聯絡我</span>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
