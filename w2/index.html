@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>今天吃甚麼？隨機抽籤機</title>
+  
+  <!-- CSS 樣式設定區塊 -->
+  <style>
+    /* 全局樣式設定：青春活力的藍粉漸層背景 */
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 50%, #fbc2eb 100%);
+    }
+
+    /* 主卡片容器 */
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 40px 30px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 85%;
+      backdrop-filter: blur(10px);
+    }
+
+    /* 主標題樣式 */
+    .title {
+      color: #ff6b81;
+      font-size: 2.2rem;
+      margin-top: 0;
+      margin-bottom: 25px;
+      transition: transform 0.3s ease;
+    }
+
+    /* 圖片容器與圖片樣式 */
+    .image-container {
+      margin-bottom: 25px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      height: 220px;
+      background-color: #f0f3f8;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 按鈕群組排版 */
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* 按鈕基礎樣式 */
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    /* 主按鈕：粉藍活力風格 */
+    .btn-primary {
+      background: linear-gradient(45deg, #ff758c, #ff7eb3);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 117, 140, 0.6);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    /* 地圖按鈕：粉藍配合樣式 */
+    .btn-secondary {
+      background: linear-gradient(45deg, #4facfe, #00f2fe);
+      color: white;
+      box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+    }
+
+    /* 隱藏元素的 CSS 類別 */
+    .hidden {
+      display: none !important;
+    }
+
+    /* 生動的彈跳動畫效果 */
+    .bounce-animation {
+      animation: bounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes bounce {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+      70% {
+        transform: scale(0.9);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <!-- 主標題／抽籤結果 -->
+    <h1 id="main-title" class="title">今天吃甚麼？</h1>
+
+    <!-- 美食照片顯示區（初始先隱藏） -->
+    <div id="image-container" class="image-container hidden">
+      <img id="food-image" src="" alt="美食照片">
+    </div>
+
+    <!-- 按鈕區塊 -->
+    <div class="button-group">
+      <!-- 抽籤按鈕 -->
+      <button id="draw-btn" class="btn btn-primary">點我抽籤</button>
+      
+      <!-- 馬上出發按鈕（初始先隱藏） -->
+      <a id="map-btn" class="btn btn-secondary hidden" href="#" target="_blank" rel="noopener noreferrer">
+        馬上出發 📍
+      </a>
+    </div>
+  </div>
+
+  <!-- JavaScript 邏輯程式碼區塊 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // 1. 定義食物選項、對應的網路照片網址與 Google Map 搜尋網址
+      const foods = [
+        {
+          name: '排骨便當',
+          image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80',
+          mapUrl: 'https://www.google.com/maps/search/排骨便當'
+        },
+        {
+          name: '鴨肉飯',
+          image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80',
+          mapUrl: 'https://www.google.com/maps/search/鴨肉飯'
+        },
+        {
+          name: '蛋餅',
+          image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=80',
+          mapUrl: 'https://www.google.com/maps/search/蛋餅'
+        },
+        {
+          name: '米糕',
+          image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80',
+          mapUrl: 'https://www.google.com/maps/search/米糕'
+        },
+        {
+          name: '河粉',
+          image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?auto=format&fit=crop&w=600&q=80',
+          mapUrl: 'https://www.google.com/maps/search/河粉'
+        }
+      ];
+
+      // 2. 抓取 HTML 元素
+      const mainTitle = document.getElementById('main-title');
+      const drawBtn = document.getElementById('draw-btn');
+      const imageContainer = document.getElementById('image-container');
+      const foodImage = document.getElementById('food-image');
+      const mapBtn = document.getElementById('map-btn');
+
+      // 3. 綁定按鈕點擊事件
+      drawBtn.addEventListener('click', () => {
+        // 隨機挑選一個食物索引
+        const randomIndex = Math.floor(Math.random() * foods.length);
+        const selectedFood = foods[randomIndex];
+
+        // 移除舊的動畫類別以重置動畫
+        mainTitle.classList.remove('bounce-animation');
+        imageContainer.classList.remove('bounce-animation');
+
+        // 強制重繪 (reflow)，讓動畫可以重新觸發
+        void mainTitle.offsetWidth;
+
+        // 替換標題文字為抽到的食物
+        mainTitle.textContent = selectedFood.name;
+
+        // 設定圖片網址與連結
+        foodImage.src = selectedFood.image;
+        mapBtn.href = selectedFood.mapUrl;
+
+        // 顯示原本隱藏的圖片與「馬上出發」按鈕
+        imageContainer.classList.remove('hidden');
+        mapBtn.classList.remove('hidden');
+
+        // 加上生動的彈跳動畫
+        mainTitle.classList.add('bounce-animation');
+        imageContainer.classList.add('bounce-animation');
+      });
+
+    });
+  </script>
+</body>
+</html>
